@@ -103,6 +103,11 @@ derive Blank, for: Foo, from: Array
 Foo.new.blank? #=> false
 ```
 
+## Todo
+
+* [ ] Write specs
+* [ ] Try to reduce code duplication
+
 ## Contributing
 
 1. Fork it ( https://github.com/citizen428/protocols/fork )

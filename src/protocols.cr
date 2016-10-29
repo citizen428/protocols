@@ -9,7 +9,7 @@ end
 macro defprotocol(name, *methods)
   module {{name.id}}
     {% for method in methods %}
-      abstract def {{method.id}} 
+      abstract def {{method.id}}
     {% end %}
   end
 end
@@ -18,18 +18,28 @@ macro defimpl(protocol, &block)
   include {{protocol}}
   module {{protocol}}Implementation
     {{block.body}}
-  end  
-  include {{protocol}}Implementation    
+  end
+  include {{protocol}}Implementation
 end
 
 macro defimpl(protocol, *, for klass, &block)
-  class {{klass}}
-    include {{protocol}}
-    module {{protocol}}Implementation
-      {{block.body}}
+  {% if Reference.all_subclasses.includes?(klass.resolve) %}
+    class {{klass}}
+      include {{protocol}}
+      module {{protocol}}Implementation
+        {{block.body}}
+      end
+      include {{protocol}}Implementation
     end
-    include {{protocol}}Implementation
-  end
+  {% else %}
+    struct {{klass}}
+      include {{protocol}}
+      module {{protocol}}Implementation
+        {{block.body}}
+      end
+      include {{protocol}}Implementation
+    end
+  {% end %}
 end
 
 macro derive(protocol, *, from)
@@ -38,9 +48,15 @@ macro derive(protocol, *, from)
 end
 
 macro derive(protocol, *, for klass, from)
-  class {{klass}}
-    include {{protocol}} 
-    include {{from}}::{{protocol}}Implementation
-  end
+  {% if Reference.all_subclasses.includes?(klass.resolve) %}
+    class {{klass}}
+      include {{protocol}}
+      include {{from}}::{{protocol}}Implementation
+    end
+  {% else %}
+    struct {{klass}}
+      include {{protocol}}
+      include {{from}}::{{protocol}}Implementation
+    end
+  {% end %}
 end
-
