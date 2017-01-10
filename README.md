@@ -1,6 +1,8 @@
 # protocols
 
 `defprotocol` and `defimpl` macros inspired by [Elixir](http://elixir-lang.org/getting-started/protocols.html).
+Under the hood this uses modulles and abstract methods to make sure classes claiming to adhere to a certain protocol
+actually implement it fully.
 
 ## Installation
 
@@ -13,9 +15,7 @@ dependencies:
     github: citizen428/protocols
 ```
 
-
 ## Usage
-
 
 ```crystal
 require "protocols"
@@ -30,12 +30,13 @@ defprotocol Greetable do
   def greet
     "Hello from #{name}"
   end
-  
+
   abstract def name
 end
 ```
 
-The above form allows us to specify both concrete and abstract methods for the protocol. There is also a shortcut for protocols which only contain abstract methods:
+The above form allows us to specify both concrete and abstract methods for the protocol. There is
+also a shortcut for protocols which only contain abstract methods:
 
 ```crystal
 defprotocol AbstractGreetable, :greet, :name
@@ -43,29 +44,17 @@ defprotocol AbstractGreetable, :greet, :name
 
 ### Implementing protocols
 
-Given the below `Blank` protocol, we have several ways of implementing it.
+Given the following `Blank` protocol
 
 ```crystal
-# Returns true if if data is considered blank/empty    
+# Returns true if if data is considered blank/empty
 defprotocol Blank, :blank?
 ```
 
-One way is to use `defimpl` with the `for:` argument, which can be used on the toplevel and is handy if you want to keep all your implementations close to each other.
+we can define define an implementation inside a class or struct body:
 
 ```crystal
-defimpl Blank, for: Array do
-  def blank
-    empty?
-  end
-end
-
-Array(String).new.blank? #=> true
-```
-
-Alternatively you can define an implementation inside a class or struct body:
-
-```crystal
-struct Nil
+class Array
   defimpl Blank do
     def blank?
       true
@@ -76,7 +65,9 @@ end
 nil.blank? #=> true
 ```
 
-In both cases `defimpl` will `include` the protocol module, define a nested module called `"#{protocol_name}Implementation"` and include this module too. While this may seem complicated, it makes it possible to `derive` implementations from other classes.
+`defimpl` will `include` the protocol module, define a nested module called `"#{protocol_name}Implementation"`
+and include this module too. While this may seem complicated, it makes it possible to `derive` implementations
+from other classes.
 
 ### Deriving protocols
 
@@ -84,29 +75,15 @@ To avoid code duplication, it's possible to `derive` protocol implementations fr
 
 ```crystal
 struct Tuple
-  derive Blank, from: Array        
-end
-        
-Tuple.new.blank? #=> true  
-```
-
-Alternatively you can also use the `for:` argument.
-
-```crystal
-class Foo
-  def empty?
-    false
-  end
+  derive Blank, from: Array
 end
 
-derive Blank, for: Foo, from: Array 
-Foo.new.blank? #=> false
+Tuple.new.blank? #=> true
 ```
 
 ## Todo
 
 * [ ] Write specs
-* [ ] Try to reduce code duplication
 
 ## Contributing
 

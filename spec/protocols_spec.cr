@@ -1,9 +1,8 @@
 require "./spec_helper"
 
-describe Protocols do
-  # TODO: Write tests
+defprotocol TestProtocol, :test
 
-  it "works" do
-    false.should eq(true)
+describe Protocols do
+  describe "defprotocol" do    
   end
 end
