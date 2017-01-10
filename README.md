@@ -1,7 +1,7 @@
-# protocols
+# protocols [![Build Status](https://travis-ci.org/citizen428/protocols.png?branch=master)](https://travis-ci.org/citizen428/protocols)
 
 `defprotocol` and `defimpl` macros inspired by [Elixir](http://elixir-lang.org/getting-started/protocols.html).
-Under the hood this uses modulles and abstract methods to make sure classes claiming to adhere to a certain protocol
+Under the hood this uses modules and abstract methods to make sure classes claiming to adhere to a certain protocol
 actually implement it fully.
 
 ## Installation
@@ -39,7 +39,7 @@ The above form allows us to specify both concrete and abstract methods for the p
 also a shortcut for protocols which only contain abstract methods:
 
 ```crystal
-defprotocol AbstractGreetable, :greet, :name
+defprotocol Greetable, :greet, :name
 ```
 
 ### Implementing protocols
